@@ -2,8 +2,10 @@
 #include<iostream>
 #include<string>
 #include<cmath>
+#include <thread>
+#include <chrono>
 using namespace std;
- 
+
 class Shape
 {
 public:
@@ -12,6 +14,12 @@ public:
     virtual double getPerimeter() const = 0;
     virtual void draw() const = 0;
     virtual void printProperties() const = 0;
+
+protected:
+    void drawWithDelay(char symbol, int delayMs = 50) const {
+        cout << symbol << flush;
+        this_thread::sleep_for(chrono::milliseconds(delayMs));
+    }
 };
 
 class Square : public Shape
@@ -34,11 +42,13 @@ public:
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
                 if (i == 0 || i == size - 1 || j == 0 || j == size - 1)
-                    cout << "$ ";
+                    drawWithDelay('$');
                 else
-                    cout << "  ";
+                    drawWithDelay(' ');
+                cout << " ";
             }
             cout << endl;
+            this_thread::sleep_for(chrono::milliseconds(100));
         }
     }
 
@@ -71,11 +81,13 @@ public:
         for (int i = 0; i < h; i++) {
             for (int j = 0; j < w; j++) {
                 if (i == 0 || i == h - 1 || j == 0 || j == w - 1)
-                    cout << "$ ";
+                    drawWithDelay('$');
                 else
-                    cout << "  ";
+                    drawWithDelay(' ');
+                cout << " ";
             }
             cout << endl;
+            this_thread::sleep_for(chrono::milliseconds(100));
         }
     }
 
@@ -108,15 +120,21 @@ public:
         int h = (int)height;
         for (int i = 0; i < h; i++) {
             for (int j = 0; j < h - i - 1; j++) {
+                drawWithDelay(' ');
                 cout << " ";
             }
             for (int j = 0; j <= i; j++) {
-                if (i == h - 1 || j == 0 || j == i)
-                    cout << "$ ";
-                else
-                    cout << "  ";
+                if (i == h - 1 || j == 0 || j == i) {
+                    drawWithDelay('$');
+                    cout << " ";
+                }
+                else {
+                    drawWithDelay(' ');
+                    cout << " ";
+                }
             }
             cout << endl;
+            this_thread::sleep_for(chrono::milliseconds(150));
         }
     }
 
@@ -151,20 +169,25 @@ public:
         for (int y = -r; y <= r; y++) {
             for (int x = -r; x <= r; x++) {
                 double distance = sqrt(x * x + y * y);
-                if (abs(distance - r) < 0.8)
-                    cout << "$ ";
-                else
-                    cout << "  ";
+                if (abs(distance - r) < 0.8) {
+                    drawWithDelay('$');
+                    cout << " ";
+                }
+                else {
+                    drawWithDelay(' ');
+                    cout << " ";
+                }
             }
             cout << endl;
+            this_thread::sleep_for(chrono::milliseconds(120));
         }
     }
 
     void printProperties() const override {
-        cout << "Radius:" << endl;
-        cout << "  Радиус: " << radius << endl;
+        cout << "Circle:" << endl;
+        cout << "  Radius: " << radius << endl;
         cout << "  Area: " << getArea() << endl;
-        cout << "  Length: " << getPerimeter() << endl;
+        cout << "  Circumference: " << getPerimeter() << endl;
     }
 };
 
@@ -179,9 +202,10 @@ int main()
 
     for (int i = 0; i < 4; i++) {
         shapes[i]->printProperties();
-        cout << endl;
+        this_thread::sleep_for(chrono::milliseconds(1000));
         shapes[i]->draw();
         cout << "\n----------------------------\n" << endl;
+        this_thread::sleep_for(chrono::milliseconds(1000)); 
     }
 
     for (int i = 0; i < 4; i++) {
